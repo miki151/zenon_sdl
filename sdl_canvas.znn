@@ -17,7 +17,7 @@ export void fillRectangle(SDLCanvas* canvas, rectangle* r, color* color) {
 }
 
 export void frameRectangle(SDLCanvas* canvas, rectangle* r, color* color, int width) {
-  *canvas^.window^.outlinedRectangle(r, *color, 1);
+  *canvas^.window^.outlinedRectangle(r, *color, width);
 }
 
 export void drawLine(SDLCanvas* canvas, vec2 v1, vec2 v2, color* color) {

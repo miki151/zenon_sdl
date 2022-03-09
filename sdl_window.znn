@@ -107,7 +107,8 @@ export SDLWindow!string sdl_create_window(vec2? size, string title) {
     }
 
     auto window = SDL_CreateWindow(title.data(), SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED, size ? size->x : gScreenRect.w, size ? size->y : gScreenRect.y, 0);
+        SDL_WINDOWPOS_UNDEFINED, size ? size->x : gScreenRect.w, size ? size->y : gScreenRect.y,
+            SDL_WINDOW_RESIZABLE);
     if (!window)
       return invoke(&gen_error, zenon_string::reference(SDL_GetError()));
     auto renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
