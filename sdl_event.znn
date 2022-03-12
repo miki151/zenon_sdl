@@ -52,34 +52,36 @@ export vector<SDLEvent> getEvents(SDLEventsState mutable* state) {
   const updateKey = [&] (key_type k, bool s) {
     state^.pressed_keys.set(k, s);
   };
-  const getMods = [](bool lctrl) {
+  const getMods = [](bool lctrl, bool lshift) {
     mutable mods = enum_set<key_event_modifier>();
     if (lctrl)
       mods.set(key_event_modifier::LCTRL);
+    if (lshift)
+      mods.set(key_event_modifier::LSHIFT);
     return move(mods);
   };
   embed {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
       auto get = [&] {
-        auto get_event = [&](key_type key, bool down, bool lctrl) {
+        auto get_event = [&](key_type key, bool down, bool lctrl, bool lshift) {
           invoke(&updateKey, key, down);
           return SDLEvent::key(key_event{key, down ? key_event_type::DOWN : key_event_type::UP,
-              invoke(&getMods, lctrl)});
+              invoke(&getMods, lctrl, lshift)});
         };
         if (event.type == SDL_JOYBUTTONDOWN || event.type == SDL_JOYBUTTONUP) {
           bool down = event.type == SDL_JOYBUTTONDOWN;
           switch (event.jbutton.button) {
-            case 8:  return get_event(key_type::W, down, false);
+            case 8:  return get_event(key_type::W, down, false, false);
             case 4:
-            case 10: return get_event(key_type::Y, down, false);
+            case 10: return get_event(key_type::Y, down, false, false);
             case 5:
-            case 11: return get_event(key_type::F1, down, false);
-            case 9:  return get_event(key_type::S, down, false);
-            case 2:  return get_event(key_type::ESCAPE, down, false);
-            case 0:  return get_event(key_type::B, down, false);
-            case 3:  return get_event(key_type::Y, down, false);
-            case 1:  return get_event(key_type::ENTER, down, false);
+            case 11: return get_event(key_type::F1, down, false, false);
+            case 9:  return get_event(key_type::S, down, false, false);
+            case 2:  return get_event(key_type::ESCAPE, down, false, false);
+            case 0:  return get_event(key_type::B, down, false, false);
+            case 3:  return get_event(key_type::Y, down, false, false);
+            case 1:  return get_event(key_type::ENTER, down, false, false);
           }
         }
         if (event.type == SDL_QUIT)
@@ -87,34 +89,51 @@ export vector<SDLEvent> getEvents(SDLEventsState mutable* state) {
         if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
           bool down = event.type == SDL_KEYDOWN;
           bool lctrl = event.key.keysym.mod & KMOD_LCTRL;
+          bool lshift = event.key.keysym.mod & KMOD_LSHIFT;
           switch (event.key.keysym.sym) {
-            case SDLK_UP:    return get_event(key_type::UP, down, lctrl);
-            case SDLK_LEFT:  return get_event(key_type::LEFT, down, lctrl);
-            case SDLK_RIGHT: return get_event(key_type::RIGHT, down, lctrl);
-            case SDLK_DOWN:  return get_event(key_type::DOWN, down, lctrl);
-            case SDLK_ESCAPE:return get_event(key_type::ESCAPE, down, lctrl);
-            case SDLK_SPACE: return get_event(key_type::SPACE, down, lctrl);
-            case SDLK_RETURN:return get_event(key_type::ENTER, down, lctrl);
-            case SDLK_HOME:  return get_event(key_type::HOME, down, lctrl);
-            case SDLK_END:   return get_event(key_type::END, down, lctrl);
-            case SDLK_BACKSPACE:   return get_event(key_type::BACKSPACE, down, lctrl);
-            case SDLK_DELETE:return get_event(key_type::DELETE, down, lctrl);
-            case SDLK_PAGEUP:return get_event(key_type::PAGE_UP, down, lctrl);
-            case SDLK_PAGEDOWN:return get_event(key_type::PAGE_DOWN, down, lctrl);
-            case SDLK_F1:    return get_event(key_type::F1, down, lctrl);
-            case SDLK_a:     return get_event(key_type::A, down, lctrl);
-            case SDLK_w:     return get_event(key_type::W, down, lctrl);
-            case SDLK_s:     return get_event(key_type::S, down, lctrl);
-            case SDLK_d:     return get_event(key_type::D, down, lctrl);
-            case SDLK_b:     return get_event(key_type::B, down, lctrl);
-            case SDLK_y:     return get_event(key_type::Y, down, lctrl);
-            case SDLK_n:     return get_event(key_type::N, down, lctrl);
+            case SDLK_UP:    return get_event(key_type::UP, down, lctrl, lshift);
+            case SDLK_LEFT:  return get_event(key_type::LEFT, down, lctrl, lshift);
+            case SDLK_RIGHT: return get_event(key_type::RIGHT, down, lctrl, lshift);
+            case SDLK_DOWN:  return get_event(key_type::DOWN, down, lctrl, lshift);
+            case SDLK_ESCAPE:return get_event(key_type::ESCAPE, down, lctrl, lshift);
+            case SDLK_SPACE: return get_event(key_type::SPACE, down, lctrl, lshift);
+            case SDLK_RETURN:return get_event(key_type::ENTER, down, lctrl, lshift);
+            case SDLK_HOME:  return get_event(key_type::HOME, down, lctrl, lshift);
+            case SDLK_END:   return get_event(key_type::END, down, lctrl, lshift);
+            case SDLK_BACKSPACE:   return get_event(key_type::BACKSPACE, down, lctrl, lshift);
+            case SDLK_DELETE:return get_event(key_type::DELETE, down, lctrl, lshift);
+            case SDLK_PAGEUP:return get_event(key_type::PAGE_UP, down, lctrl, lshift);
+            case SDLK_PAGEDOWN:return get_event(key_type::PAGE_DOWN, down, lctrl, lshift);
+            case SDLK_TAB:   return get_event(key_type::TAB, down, lctrl, lshift);
+            case SDLK_LCTRL: return get_event(key_type::LCTRL, down, lctrl, lshift);
+            case SDLK_F1:    return get_event(key_type::F1, down, lctrl, lshift);
+            case SDLK_a:     return get_event(key_type::A, down, lctrl, lshift);
+            case SDLK_b:     return get_event(key_type::B, down, lctrl, lshift);
+            case SDLK_c:     return get_event(key_type::C, down, lctrl, lshift);
+            case SDLK_d:     return get_event(key_type::D, down, lctrl, lshift);
+            case SDLK_e:     return get_event(key_type::E, down, lctrl, lshift);
+            case SDLK_f:     return get_event(key_type::F, down, lctrl, lshift);
+            case SDLK_g:     return get_event(key_type::G, down, lctrl, lshift);
+            case SDLK_h:     return get_event(key_type::H, down, lctrl, lshift);
+            case SDLK_n:     return get_event(key_type::N, down, lctrl, lshift);
+            case SDLK_s:     return get_event(key_type::S, down, lctrl, lshift);
+            case SDLK_u:     return get_event(key_type::U, down, lctrl, lshift);
+            case SDLK_v:     return get_event(key_type::V, down, lctrl, lshift);
+            case SDLK_w:     return get_event(key_type::W, down, lctrl, lshift);
+            case SDLK_x:     return get_event(key_type::X, down, lctrl, lshift);
+            case SDLK_y:     return get_event(key_type::Y, down, lctrl, lshift);
+            case SDLK_z:     return get_event(key_type::Z, down, lctrl, lshift);
             default: break;
           }
         }
         if (event.type == SDL_MOUSEMOTION) {
-          return SDLEvent::mouse({mouse_event_type::JOYSTICK_RIGHT,
-              {event.motion.xrel * 40, event.motion.yrel * 40}});
+          return SDLEvent::mouse({mouse_event_type::MOUSE_MOVEMENT,
+              {event.motion.x, event.motion.y}});
+        }
+        if (event.type == SDL_MOUSEWHEEL) {
+          return SDLEvent::mouse(mouse_event{
+              event.wheel.y > 0 ? mouse_event_type::WHEEL_UP : mouse_event_type::WHEEL_DOWN,
+              vec2{event.button.x, event.button.y}});
         }
         if (event.type == SDL_JOYAXISMOTION) {
           int value = event.jaxis.value / 33;
