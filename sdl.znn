@@ -44,3 +44,31 @@ export void sdl_error_box(string title, string message) {
     SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, title.data(), message.data(), nullptr);
   }
 }
+
+export void!string sdl_set_clipboard(string text) {
+  const getError = [](string s) -> expected<void, string> {
+    return s;
+  };
+  embed {
+    if (SDL_SetClipboardText(text.data()) != 0)
+      return invoke(&getError, zenon_string::reference(SDL_GetError()));
+  }
+}
+
+export string!string sdl_get_clipboard() {
+  const getError = [](string s) -> expected<string, string> {
+    return expected<string, string>::error(s);
+  };
+  const getValue = [](string s) -> expected<string, string> {
+    return expected<string, string>::value(s);
+  };
+  embed {
+    if (SDL_HasClipboardText()) {
+      auto c = SDL_GetClipboardText();
+      if (c[0] == '\0')
+        return invoke(&getError, zenon_string::reference(SDL_GetError()));
+      return invoke(&getValue, zenon_string::owned(c));
+    }
+  }
+  return expected<string, string>::value("");
+}

@@ -3,6 +3,7 @@
 export import "sdl_window.znn";
 import "std/io.znn";
 import "sdl_ttf.znn";
+import "sdl.znn";
 export import "std/hash_map.znn";
 
 export struct SDLCanvas {
@@ -60,4 +61,11 @@ export vec2 getTextSize(SDLCanvas* canvas, string text, int size) {
   return *getTextSize(canvas^.font, text, size);
 }
 
+export void setClipboard(SDLCanvas* cavas, string text) {
+  *sdl_set_clipboard(text);
+}
+
+export string getClipboard(SDLCanvas*) {
+  return *sdl_get_clipboard();
+}
 
