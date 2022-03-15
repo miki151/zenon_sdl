@@ -115,8 +115,18 @@ export vector<SDLEvent> getEvents(SDLEventsState mutable* state) {
             case SDLK_f:     return get_event(key_type::F, down, lctrl, lshift);
             case SDLK_g:     return get_event(key_type::G, down, lctrl, lshift);
             case SDLK_h:     return get_event(key_type::H, down, lctrl, lshift);
+            case SDLK_i:     return get_event(key_type::I, down, lctrl, lshift);
+            case SDLK_j:     return get_event(key_type::J, down, lctrl, lshift);
+            case SDLK_k:     return get_event(key_type::K, down, lctrl, lshift);
+            case SDLK_l:     return get_event(key_type::L, down, lctrl, lshift);
+            case SDLK_m:     return get_event(key_type::M, down, lctrl, lshift);
             case SDLK_n:     return get_event(key_type::N, down, lctrl, lshift);
+            case SDLK_o:     return get_event(key_type::O, down, lctrl, lshift);
+            case SDLK_p:     return get_event(key_type::P, down, lctrl, lshift);
+            case SDLK_q:     return get_event(key_type::Q, down, lctrl, lshift);
+            case SDLK_r:     return get_event(key_type::R, down, lctrl, lshift);
             case SDLK_s:     return get_event(key_type::S, down, lctrl, lshift);
+            case SDLK_t:     return get_event(key_type::T, down, lctrl, lshift);
             case SDLK_u:     return get_event(key_type::U, down, lctrl, lshift);
             case SDLK_v:     return get_event(key_type::V, down, lctrl, lshift);
             case SDLK_w:     return get_event(key_type::W, down, lctrl, lshift);
