@@ -92,7 +92,7 @@ export void update(SDLWindow* window) {
   }
 }
 
-export SDLWindow!string sdl_create_window(vec2? size, string title) {
+export SDLWindow!string sdl_create_window(vec2? size, string title, bool vsync) {
   mutable SDLWindow? ret = null;
   mutable string? errorRet = null;
   const gen_error = [] (string s) -> expected<SDLWindow, string> {
@@ -111,7 +111,7 @@ export SDLWindow!string sdl_create_window(vec2? size, string title) {
             SDL_WINDOW_RESIZABLE);
     if (!window)
       return invoke(&gen_error, zenon_string::reference(SDL_GetError()));
-    auto renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
+    auto renderer = SDL_CreateRenderer(window, -1, vsync ? SDL_RENDERER_PRESENTVSYNC : 0);
     if (!renderer)
       return invoke(&gen_error, zenon_string::reference(SDL_GetError()));
     ret = SDLWindow{window, renderer};
