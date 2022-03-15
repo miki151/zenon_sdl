@@ -33,6 +33,15 @@ export string sdl_write_directory_path(string appId) {
   }
 }
 
+export string sdl_data_directory_path() {
+  embed_returns {
+    auto path = SDL_GetBasePath();
+    if (!path)
+      return zenon_string::reference("./");
+    return zenon_string::reference(path);
+  }
+}
+
 export void sdl_delay(int time) {
   embed {
     SDL_Delay(time);
