@@ -56,6 +56,10 @@ export double length_d(vec2* v) {
   return sqrt(v^.x * v^.x + v^.y * v^.y);
 }
 
+export int length4(vec2* v) {
+  return abs(v^.x) + abs(v^.y);
+}
+
 export double get_angle(vec2* v) {
   return atan2(v^.x, v^.y);
 }
