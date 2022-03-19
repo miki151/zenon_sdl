@@ -110,6 +110,9 @@ export vector<SDLEvent> getEvents(SDLEventsState mutable* state) {
             case SDLK_TAB:   return get_event(key_type::TAB, down, lctrl, lshift, lalt);
             case SDLK_LCTRL: return get_event(key_type::LCTRL, down, lctrl, lshift, lalt);
             case SDLK_F1:    return get_event(key_type::F1, down, lctrl, lshift, lalt);
+            case SDLK_F2:    return get_event(key_type::F2, down, lctrl, lshift, lalt);
+            case SDLK_F3:    return get_event(key_type::F3, down, lctrl, lshift, lalt);
+            case SDLK_F4:    return get_event(key_type::F4, down, lctrl, lshift, lalt);
             case SDLK_a:     return get_event(key_type::A, down, lctrl, lshift, lalt);
             case SDLK_b:     return get_event(key_type::B, down, lctrl, lshift, lalt);
             case SDLK_c:     return get_event(key_type::C, down, lctrl, lshift, lalt);
