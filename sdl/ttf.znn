@@ -2,10 +2,10 @@
 export import "std/expected.znn";
 export import "std/vector.znn";
 export import "std/hash_map.znn";
-export import "color.znn";
-export import "vec2.znn";
-import "sdl_surface.znn";
-import "sdl_window.znn";
+export import "ui/color.znn";
+export import "ui/vec2.znn";
+import "surface.znn";
+import "window.znn";
 import "std/io.znn";
 
 embed {

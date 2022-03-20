@@ -6,10 +6,10 @@ embed {
 
 export import "std/expected.znn";
 
-export import "sdl_surface.znn";
-export import "sdl_texture.znn";
-export import "sdl_window.znn";
-export import "sdl_event.znn";
+export import "surface.znn";
+export import "texture.znn";
+export import "window.znn";
+export import "event.znn";
 
 import "std/io.znn";
 

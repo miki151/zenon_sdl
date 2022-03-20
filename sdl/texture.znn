@@ -3,8 +3,8 @@ embed {
 #include "SDL.h"
 }
 
-import "sdl_surface.znn";
-import "sdl_window.znn";
+import "surface.znn";
+import "window.znn";
 
 export embed {
   struct SDL_Texture;

@@ -5,8 +5,8 @@ embed {
 
 export import "std/expected.znn";
 export import "std/vector.znn";
-export import "vec2.znn";
-export import "ui_event.znn";
+export import "ui/vec2.znn";
+export import "ui/event.znn";
 export import "std/enum_set.znn";
 import "std/enum.znn";
 

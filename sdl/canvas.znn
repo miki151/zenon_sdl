@@ -1,8 +1,7 @@
 
-//export import "ui_canvas.znn";
-export import "sdl_window.znn";
+export import "window.znn";
 import "std/io.znn";
-import "sdl_ttf.znn";
+import "ttf.znn";
 import "sdl.znn";
 export import "std/hash_map.znn";
 

@@ -1,8 +1,8 @@
 
 export import "std/expected.znn";
-export import "color.znn";
-export import "vec2.znn";
-export import "rectangle.znn";
+export import "ui/color.znn";
+export import "ui/vec2.znn";
+export import "ui/rectangle.znn";
 
 import "std/io.znn";
 
