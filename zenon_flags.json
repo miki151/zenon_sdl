@@ -1,0 +1,13 @@
+{
+	"cpp_includes" : [
+		"/usr/include/SDL2"
+	],
+       	"cpp_libs" : [	
+		"SDL2",
+		"SDL2_ttf",
+		"SDL2_image"
+	],
+	"zenon_libs" : [
+		"/home/michal/zenon_ui"
+	]
+}
