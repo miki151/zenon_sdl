@@ -116,6 +116,8 @@ export SDLWindow!string sdl_create_window(vec2? size, string title, string iconF
     if (!renderer)
       return invoke(&gen_error, zenon_string::reference(SDL_GetError()));
     auto icon = IMG_Load(iconFile.data());
+    if (!icon)
+      return invoke(&gen_error, zenon_string::reference(IMG_GetError()));
     SDL_SetWindowIcon(window, icon);
     ret = SDLWindow{window, renderer};
     if (-1 != SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt")) {
