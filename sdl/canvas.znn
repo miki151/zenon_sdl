@@ -28,7 +28,7 @@ export void drawCircle(SDLCanvas* canvas, vec2 center, int radius, color* color)
   *canvas^.window^.drawCircle(center, radius, *color);
 }
 
-export void drawTexture(SDLCanvas* canvas, rectangle* r, string id, texture_flip flip) {
+export void drawTexture(SDLCanvas* canvas, rectangle* r, string id) {
   if (const t = canvas^.textures.get_maybe(&id))
     *canvas^.window^.blitFrom(r^.v1, *t, r^.size());
   else
