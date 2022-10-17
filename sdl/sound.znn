@@ -20,7 +20,7 @@ export expected<SDLSound, string> SDLLoadSound(string path) {
   const getError = [](string s) ^. expected<SDLSound, string> {
     return s;
   };
-  embed_returns {
+  embed {
     if (auto sound = Mix_LoadWAV(path.data()))
       return invoke(&getResult, sound);
     else

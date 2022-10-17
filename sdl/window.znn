@@ -33,57 +33,50 @@ export vec2 size(SDLWindow* window) {
   return move(ret);
 }
 
+export [@entry_point]
+void!string getError(string s) {
+  return s;
+}
+
 export void!string filledRectangle(SDLWindow* s, rectangle* rect, color color) {
-  const getError = [](string s) -> void!string {
-    return s;
-  };
   embed {
     SDL_Rect sdlRect{rect->v1.x, rect->v1.y, rect->v2.x - rect->v1.x, rect->v2.y - rect->v1.y};
     if (SDL_SetRenderDrawColor(s->renderer, color.r, color.g, color.b, 255) != 0)
-      return invoke(&getError, zenon_string::reference(SDL_GetError()));
+      return getError(zenon_string::reference(SDL_GetError()));
     if (SDL_RenderFillRect(s->renderer, &sdlRect) != 0)
-      return invoke(&getError, zenon_string::reference(SDL_GetError()));
+      return getError(zenon_string::reference(SDL_GetError()));
   }
 }
 
 export void!string outlinedRectangle(SDLWindow* s, rectangle* rect, color color, int width) {
-  const getError = [](string s) -> void!string {
-    return s;
-  };
   embed {
     SDL_Rect sdlRect{rect->v1.x, rect->v1.y, rect->v2.x - rect->v1.x, rect->v2.y - rect->v1.y};
     if (SDL_SetRenderDrawColor(s->renderer, color.r, color.g, color.b, 255) != 0)
-      return invoke(&getError, zenon_string::reference(SDL_GetError()));
+      return getError(zenon_string::reference(SDL_GetError()));
     if (SDL_RenderDrawRect(s->renderer, &sdlRect) != 0)
-      return invoke(&getError, zenon_string::reference(SDL_GetError()));
+      return getError(zenon_string::reference(SDL_GetError()));
   }
 }
 
 export void!string blitFrom(SDLWindow* dst, vec2 coord, sdl_texture* src, vec2? size) {
-  const get_error = [](string s) -> expected<void, string> {
-    return s;
-  };
   const src_size = size ?? *src^.size();
   embed {
     SDL_Rect rect{coord.x, coord.y, src_size.x, src_size.y};
     SDL_Rect srcRect{0, 0, src_size.x, src_size.y};
     if (SDL_RenderCopy(dst->renderer, src->texture, &srcRect, &rect) != 0)
-      return invoke(&get_error, zenon_string::reference(SDL_GetError()));
+      return getError(zenon_string::reference(SDL_GetError()));
   }
 }
 
 export void!string blitFromRotated(SDLWindow* dst, vec2 coord, sdl_texture* src, vec2? size, double angle,
     color col) {
-  const get_error = [](string s) -> expected<void, string> {
-    return s;
-  };
   const src_size = size ?? *src^.size();
   embed {
     SDL_Rect rect{coord.x, coord.y, src_size.x, src_size.y};
     SDL_Rect srcRect{0, 0, src_size.x, src_size.y};
     SDL_SetTextureColorMod(src->texture, col.r, col.g, col.b);
     if (SDL_RenderCopyEx(dst->renderer, src->texture, &srcRect, &rect, angle * 180 / 3.14, nullptr, SDL_FLIP_NONE) != 0)
-      return invoke(&get_error, zenon_string::reference(SDL_GetError()));
+      return getError(zenon_string::reference(SDL_GetError()));
   }
 }
 
@@ -93,7 +86,7 @@ export void update(SDLWindow* window) {
   }
 }
 
-export SDLWindow!string sdl_create_window(vec2? size, string title, string iconFile, bool vsync) {
+export SDLWindow!string sdl_create_window(vec2? size, string title, string? iconFile, bool vsync) {
   mutable SDLWindow? ret = null;
   mutable string? errorRet = null;
   const gen_error = [] (string s) -> expected<SDLWindow, string> {
@@ -115,10 +108,12 @@ export SDLWindow!string sdl_create_window(vec2? size, string title, string iconF
     auto renderer = SDL_CreateRenderer(window, -1, vsync ? SDL_RENDERER_PRESENTVSYNC : 0);
     if (!renderer)
       return invoke(&gen_error, zenon_string::reference(SDL_GetError()));
-    auto icon = IMG_Load(iconFile.data());
-    if (!icon)
-      return invoke(&gen_error, zenon_string::reference(IMG_GetError()));
-    SDL_SetWindowIcon(window, icon);
+    if (iconFile) {
+      auto icon = IMG_Load(iconFile->data());
+      if (!icon)
+        return invoke(&gen_error, zenon_string::reference(IMG_GetError()));
+      SDL_SetWindowIcon(window, icon);
+    }
     ret = SDLWindow{window, renderer};
     if (-1 != SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt")) {
       auto res = SDL_NumJoysticks();
@@ -140,21 +135,15 @@ export void setTitle(SDLWindow* window, string title) {
 }
 
 export void!string drawLine(SDLWindow* s, vec2 v1, vec2 v2, color color) {
-  const getError = [](string s) -> void!string {
-    return s;
-  };
   embed {
     if (SDL_SetRenderDrawColor(s->renderer, color.r, color.g, color.b, 255) != 0)
-      return invoke(&getError, zenon_string::reference(SDL_GetError()));
+      return getError(zenon_string::reference(SDL_GetError()));
     if (SDL_RenderDrawLine(s->renderer, v1.x, v1.y, v2.x, v2.y) != 0)
-      return invoke(&getError, zenon_string::reference(SDL_GetError()));
+      return getError(zenon_string::reference(SDL_GetError()));
   }
 }
 
 export void!string drawCircle(SDLWindow* s, vec2 center, int radius, color color) {
-  const getError = [](string s) -> void!string {
-    return s;
-  };
   const diameter = (radius * 2);
   mutable x = (radius - 1);
   mutable y = 0;
@@ -164,7 +153,7 @@ export void!string drawCircle(SDLWindow* s, vec2 center, int radius, color color
 
   embed {
   if (SDL_SetRenderDrawColor(s->renderer, color.r, color.g, color.b, 255) != 0)
-    return invoke(&getError, zenon_string::reference(SDL_GetError()));
+    return getError(zenon_string::reference(SDL_GetError()));
   }
 
   while (x >= y) {
@@ -204,7 +193,7 @@ void filledTriangleBottom(SDLWindow* dst, vec2 v1, vec2 v2, vec2 v3) {
     }
     curx1 += invslope1;
     curx2 += invslope2;
-  } 
+  }
 }
 
 export void filledTriangleTop(SDLWindow* dst, vec2 v1, vec2 v2, vec2 v3) {
@@ -219,7 +208,7 @@ export void filledTriangleTop(SDLWindow* dst, vec2 v1, vec2 v2, vec2 v3) {
     }
     curx1 -= invslope1;
     curx2 -= invslope2;
-  } 
+  }
 }
 
 void sortPoints(vec2 mutable* p1, vec2 mutable* p2, vec2 mutable* p3) {
@@ -238,12 +227,9 @@ void sortPoints(vec2 mutable* p1, vec2 mutable* p2, vec2 mutable* p3) {
 }
 
 export void!string filledTriangle(SDLWindow* dst, mutable vec2 p1, mutable vec2 p2, mutable vec2 p3, color color) {
-  const getError = [](string s) -> expected<void, string> {
-    return s;
-  };
   embed {
     if (SDL_SetRenderDrawColor(dst->renderer, color.r, color.g, color.b, 255) != 0)
-      return invoke(&getError, zenon_string::reference(SDL_GetError()));
+      return getError(zenon_string::reference(SDL_GetError()));
   }
   sortPoints(&p1, &p2, &p3);
   if (p2.y == p3.y)
@@ -258,13 +244,13 @@ export void!string filledTriangle(SDLWindow* dst, mutable vec2 p1, mutable vec2 
 }
 
 export bool!string sdl_prompt(SDLWindow* dst, string title, string text) {
-  const getError = [](string s) -> expected<bool, string> {
-    return s;
-  };
   const getValue = [](bool b) -> expected<bool, string> {
     return b;
   };
-  embed_returns {
+  const getError = [](string s) -> expected<bool, string> {
+    return s;
+  };
+  embed {
     const SDL_MessageBoxButtonData buttons[] = {
         { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, "yes" },
         { /* .flags, .buttonid, .text */        0, 0, "no" },

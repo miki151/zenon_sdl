@@ -36,7 +36,7 @@ FC_Font mutable*!string getFontImpl(SDLFont mutable* font, int size) {
   const gen_value = [] (FC_Font mutable* f) -> expected<FC_Font mutable*, string> {
     return f;
   };
-  embed_returns {
+  embed {
     if (!font->fonts.count(size)) {
       auto f = FC_CreateFont();
       if (!FC_LoadFont(f, font->window->renderer, font->path.data(), size, FC_MakeColor(255, 255, 255, 255),

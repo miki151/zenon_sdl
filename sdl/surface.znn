@@ -33,7 +33,7 @@ export enum SDLTransformType {
 };
 
 export color getPixel(SDLSurface* source, vec2 pos) {
-  embed_returns {
+  embed {
   auto surface = source->surface;
   auto get = [&]() -> Uint32 {
     int bpp = surface->format->BytesPerPixel;
@@ -92,7 +92,7 @@ export expected<SDLSurface, string> createSurface(vec2 size) {
   const getError = [](string s) -> expected<SDLSurface, string> {
     return s;
   };
-  embed_returns {
+  embed {
     auto surface = SDL_CreateRGBSurface(0, size.x, size.y, 32, 0, 0, 0, 0);
     if (!surface)
       return invoke(&getError, zenon_string::reference(SDL_GetError()));
@@ -107,7 +107,7 @@ export expected<SDLSurface, string> transform(SDLSurface* source, SDLTransformTy
   const getError = [](string s) -> expected<SDLSurface, string> {
     return s;
   };
-  embed_returns {
+  embed {
     auto surface = SDL_ConvertSurface(source->surface, source->surface->format, 0);
     if (!surface)
       return invoke(&getError, zenon_string::reference(SDL_GetError()));
@@ -131,7 +131,7 @@ export expected<SDLSurface, string> transform(SDLSurface* source, SDLTransformTy
 }
 
 export vec2 size(SDLSurface* s) {
-  embed_returns {
+  embed {
     return vec2{s->surface->w, s->surface->h};
   }
 }
@@ -143,7 +143,7 @@ export SDLSurface!string sdlLoadBMP(string path) {
   const getError = [](string s) -> SDLSurface!string {
     return s;
   };
-  embed_returns {
+  embed {
     if (auto res = SDL_LoadBMP(path.data()))
       return invoke(&getResult, res);
     else

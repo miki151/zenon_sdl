@@ -29,7 +29,7 @@ export sdl_texture!string make_target_texture(SDLWindow* window, vec2 size) {
   const getError = [](string s) -> sdl_texture!string {
     return s;
   };
-  embed_returns {
+  embed {
     if (auto t = SDL_CreateTexture(window->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 
         size.x, size.y)) {
       SDL_SetTextureBlendMode(t, SDL_BLENDMODE_BLEND);
@@ -46,7 +46,7 @@ export sdl_texture!string to_texture(SDLSurface* s, SDLWindow* window) {
   const getError = [](string s) -> sdl_texture!string {
     return s;
   };
-  embed_returns {
+  embed {
     if (auto t = SDL_CreateTextureFromSurface(window->renderer, s->surface))
       return invoke(&getResult, t);
     else

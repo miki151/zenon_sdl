@@ -25,7 +25,7 @@ export void!string sdl_init() {
 }
 
 export string sdl_write_directory_path(string appId) {
-  embed_returns {
+  embed {
     auto path = SDL_GetPrefPath("comzenon", appId.data());
     if (!path)
       return zenon_string::reference("./");
@@ -34,7 +34,7 @@ export string sdl_write_directory_path(string appId) {
 }
 
 export string sdl_data_directory_path() {
-  embed_returns {
+  embed {
     auto path = SDL_GetBasePath();
     if (!path)
       return zenon_string::reference("./");
