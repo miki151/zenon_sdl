@@ -27,24 +27,22 @@ export union SDLEvent {
   string text;
 };
 
-export void!string sdlSetRelativeMouseMode(bool state) {
+export struct SDLEventsState {
+  enum_set<key_type> pressed_keys = enum_set<key_type>();
+  vec2 leftJostickState = vec2(0, 0);
+  vec2 rightJostickState = vec2(0, 0);
+  bool relativeMouse = false;
+};
+
+export void!string setRelativeMouseMode(SDLEventsState mutable* state, bool value) {
   const getError = [](string s) -> void!string {
     return s;
   };
+  state^.relativeMouse = value;
   embed {
-    if (SDL_SetRelativeMouseMode(state ? SDL_TRUE : SDL_FALSE) != 0)
-      return invoke(&getError, zenon_string::reference(SDL_GetError())); 
+    if (SDL_SetRelativeMouseMode(value ? SDL_TRUE : SDL_FALSE) != 0)
+      return invoke(&getError, zenon_string::reference(SDL_GetError()));
   }
-}
-
-export struct SDLEventsState {
-  enum_set<key_type> pressed_keys;
-  vec2 leftJostickState;
-  vec2 rightJostickState;
-};
-
-export SDLEventsState() {
-  return SDLEventsState::SDLEventsState(enum_set<key_type>(), vec2(0, 0), vec2(0, 0));
 }
 
 export vector<SDLEvent> getEvents(SDLEventsState mutable* state) {
@@ -143,8 +141,12 @@ export vector<SDLEvent> getEvents(SDLEventsState mutable* state) {
           }
         }
         if (event.type == SDL_MOUSEMOTION) {
-          return SDLEvent::mouse({mouse_event_type::MOUSE_MOVEMENT,
-              {event.motion.x, event.motion.y}});
+          if (!state->relativeMouse)
+            return SDLEvent::mouse({mouse_event_type::MOUSE_MOVEMENT,
+                {event.motion.x, event.motion.y}});
+          else
+            return SDLEvent::mouse({mouse_event_type::MOUSE_MOVEMENT,
+                {event.motion.xrel, event.motion.yrel}});
         }
         if (event.type == SDL_MOUSEWHEEL) {
           return SDLEvent::mouse(mouse_event{
