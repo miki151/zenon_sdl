@@ -101,10 +101,10 @@ export vector<SDLEvent> getEvents(SDLEventsState mutable* state) {
             case SDLK_RETURN:return get_event(key_type::ENTER, down, lctrl, lshift, lalt);
             case SDLK_HOME:  return get_event(key_type::HOME, down, lctrl, lshift, lalt);
             case SDLK_END:   return get_event(key_type::END, down, lctrl, lshift, lalt);
-            case SDLK_BACKSPACE:   return get_event(key_type::BACKSPACE, down, lctrl, lshift, lalt);
+            case SDLK_BACKSPACE:    return get_event(key_type::BACKSPACE, down, lctrl, lshift, lalt);
             case SDLK_DELETE:return get_event(key_type::DELETE, down, lctrl, lshift, lalt);
             case SDLK_PAGEUP:return get_event(key_type::PAGE_UP, down, lctrl, lshift, lalt);
-            case SDLK_PAGEDOWN:return get_event(key_type::PAGE_DOWN, down, lctrl, lshift, lalt);
+            case SDLK_PAGEDOWN:     return get_event(key_type::PAGE_DOWN, down, lctrl, lshift, lalt);
             case SDLK_TAB:   return get_event(key_type::TAB, down, lctrl, lshift, lalt);
             case SDLK_LCTRL: return get_event(key_type::LCTRL, down, lctrl, lshift, lalt);
             case SDLK_F1:    return get_event(key_type::F1, down, lctrl, lshift, lalt);
@@ -137,6 +137,8 @@ export vector<SDLEvent> getEvents(SDLEventsState mutable* state) {
             case SDLK_x:     return get_event(key_type::X, down, lctrl, lshift, lalt);
             case SDLK_y:     return get_event(key_type::Y, down, lctrl, lshift, lalt);
             case SDLK_z:     return get_event(key_type::Z, down, lctrl, lshift, lalt);
+            case SDLK_UNDERSCORE:   return get_event(key_type::UNDERSCORE, down, lctrl, lshift, lalt);
+            case SDLK_SLASH: return get_event(key_type::SLASH, down, lctrl, lshift, lalt);
             default: break;
           }
         }
