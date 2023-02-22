@@ -33,6 +33,12 @@ export vec2 size(SDLWindow* window) {
   return move(ret);
 }
 
+export bool isFocused(SDLWindow* window) {
+  embed {
+    return !!(SDL_GetWindowFlags(window->window) & SDL_WINDOW_INPUT_FOCUS);
+  }
+}
+
 export [@entry_point]
 void!string getError(string s) {
   return s;
