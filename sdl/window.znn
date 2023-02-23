@@ -64,11 +64,12 @@ export void!string outlinedRectangle(SDLWindow* s, rectangle* rect, color color,
   }
 }
 
-export void!string blitFrom(SDLWindow* dst, vec2 coord, sdl_texture* src, vec2? size) {
+export void!string blitFrom(SDLWindow* dst, vec2 coord, sdl_texture* src, vec2? size, color col) {
   const src_size = size ?? *src^.size();
   embed {
     SDL_Rect rect{coord.x, coord.y, src_size.x, src_size.y};
     SDL_Rect srcRect{0, 0, src_size.x, src_size.y};
+    SDL_SetTextureColorMod(src->texture, col.r, col.g, col.b);
     if (SDL_RenderCopy(dst->renderer, src->texture, &srcRect, &rect) != 0)
       return getError(zenon_string::reference(SDL_GetError()));
   }
