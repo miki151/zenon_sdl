@@ -64,10 +64,11 @@ export void!string outlinedRectangle(SDLWindow* s, rectangle* rect, color color,
   }
 }
 
-export void!string blitFrom(SDLWindow* dst, vec2 coord, sdl_texture* src, vec2? size, color col) {
+export void!string blitFrom(SDLWindow* dst, vec2 coord, sdl_texture* src, vec2? size, vec2? targetSize, color col) {
   const src_size = size ?? *src^.size();
+  const target_size = targetSize ?? src_size;
   embed {
-    SDL_Rect rect{coord.x, coord.y, src_size.x, src_size.y};
+    SDL_Rect rect{coord.x, coord.y, target_size.x, target_size.y};
     SDL_Rect srcRect{0, 0, src_size.x, src_size.y};
     SDL_SetTextureColorMod(src->texture, col.r, col.g, col.b);
     if (SDL_RenderCopy(dst->renderer, src->texture, &srcRect, &rect) != 0)
@@ -122,15 +123,6 @@ export SDLWindow!string sdl_create_window(vec2? size, string title, string? icon
       SDL_SetWindowIcon(window, icon);
     }
     ret = SDLWindow{window, renderer};
-    if (-1 != SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt")) {
-      auto res = SDL_NumJoysticks();
-      if (res < 0)
-        return invoke(&gen_error, zenon_string::reference(SDL_GetError()));
-      if (res == 0)
-        return invoke(&gen_error, zenon_string::reference("No joysticks found"));
-      if (!SDL_JoystickOpen(0))
-        return invoke(&gen_error, zenon_string::reference(SDL_GetError()));
-    }
   }
   return *move(ret);
 }

@@ -144,11 +144,11 @@ export vector<SDLEvent> getEvents(SDLEventsState mutable* state) {
         }
         if (event.type == SDL_MOUSEMOTION) {
           if (!state->relativeMouse)
-            return SDLEvent::mouse({mouse_event_type::MOUSE_MOVEMENT,
-                {event.motion.x, event.motion.y}});
+            return SDLEvent::mouse(mouse_event{mouse_event_type::MOUSE_MOVEMENT,
+                vec2{event.motion.x, event.motion.y}});
           else
-            return SDLEvent::mouse({mouse_event_type::MOUSE_MOVEMENT,
-                {event.motion.xrel, event.motion.yrel}});
+            return SDLEvent::mouse(mouse_event{mouse_event_type::MOUSE_MOVEMENT,
+                vec2{event.motion.xrel, event.motion.yrel}});
         }
         if (event.type == SDL_MOUSEWHEEL) {
           return SDLEvent::mouse(mouse_event{
@@ -160,8 +160,8 @@ export vector<SDLEvent> getEvents(SDLEventsState mutable* state) {
           switch (event.jaxis.axis) {
             case 0: state->leftJostickState.x = value; break;
             case 1: state->leftJostickState.y = value; break;
-            case 2: state->rightJostickState.x = value; break;
-            case 3: state->rightJostickState.y = value; break;
+            case 3: state->rightJostickState.x = value; break;
+            case 4: state->rightJostickState.y = value; break;
           }
         }
         if (event.type == SDL_MOUSEBUTTONDOWN) {

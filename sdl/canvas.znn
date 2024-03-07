@@ -12,6 +12,10 @@ export struct SDLCanvas {
   sdl_texture textTexture;
 };
 
+export vec2 getSize(SDLCanvas* canvas) {
+  return canvas^.window^.size();
+}
+
 export void fillRectangle(SDLCanvas* canvas, rectangle* r, color* color) {
   *canvas^.window^.filledRectangle(r, *color);
 }
@@ -28,9 +32,9 @@ export void drawCircle(SDLCanvas* canvas, vec2 center, int radius, color* color)
   *canvas^.window^.drawCircle(center, radius, *color);
 }
 
-export void drawTexture(SDLCanvas* canvas, rectangle* r, string id, color* col) {
+export void drawTexture(SDLCanvas* canvas, rectangle* r, vec2? targetSize, string id, color* col) {
   if (const t = canvas^.textures.get_maybe(&id))
-    *canvas^.window^.blitFrom(r^.v1, *t, r^.size(), *col);
+    *canvas^.window^.blitFrom(r^.v1, *t, r^.size(), targetSize, *col);
   else
     canvas^.drawText(r^.v1, "bad texture id: {id}", 10, &color(255, 0, 0));
 }

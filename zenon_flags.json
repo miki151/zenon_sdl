@@ -5,7 +5,8 @@
   "cpp_libs" : [
     "SDL2",
     "SDL2_ttf",
-    "SDL2_image"
+    "SDL2_image",
+    "SDL2_mixer"
   ],
   "zenon_libs" : [
     "/home/michal/zenon_ui"
