@@ -14,10 +14,10 @@ export struct SDLSound {
 };
 
 export expected<SDLSound, string> SDLLoadSound(string path) {
-  const getResult = [](Mix_Chunk mutable* s) ^. expected<SDLSound, string> {
+  const getResult = [](Mix_Chunk mutable* s) -> expected<SDLSound, string> {
     return SDLSound(s);
   };
-  const getError = [](string s) ^. expected<SDLSound, string> {
+  const getError = [](string s) -> expected<SDLSound, string> {
     return s;
   };
   embed {

@@ -55,13 +55,10 @@ export void!string filledRectangle(SDLWindow* s, rectangle* rect, color color) {
 }
 
 export void!string outlinedRectangle(SDLWindow* s, rectangle* rect, color color, int width) {
-  embed {
-    SDL_Rect sdlRect{rect->v1.x, rect->v1.y, rect->v2.x - rect->v1.x, rect->v2.y - rect->v1.y};
-    if (SDL_SetRenderDrawColor(s->renderer, color.r, color.g, color.b, 255) != 0)
-      return getError(zenon_string::reference(SDL_GetError()));
-    if (SDL_RenderDrawRect(s->renderer, &sdlRect) != 0)
-      return getError(zenon_string::reference(SDL_GetError()));
-  }
+  try s^.filledRectangle(&rectangle(rect^.v1, vec2(rect^.v2.x, rect^.v1.y + width)), color);
+  try s^.filledRectangle(&rectangle(rect^.v1, vec2(rect^.v1.x + width, rect^.v2.y)), color);
+  try s^.filledRectangle(&rectangle(vec2(rect^.v2.x - width, rect^.v1.y), rect^.v2), color);
+  try s^.filledRectangle(&rectangle(vec2(rect^.v1.x, rect^.v2.y - width), rect^.v2), color);
 }
 
 export void!string blitFrom(SDLWindow* dst, vec2 coord, sdl_texture* src, vec2? size, vec2? targetSize, color col) {

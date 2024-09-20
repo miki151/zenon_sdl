@@ -10,23 +10,6 @@ export import "ui/event.znn";
 export import "std/enum_set.znn";
 import "std/enum.znn";
 
-
-export struct SDLQuitEvent {
-};
-
-
-export struct SDLUnknownEvent {
-};
-
-export union SDLEvent {
-  SDLQuitEvent quit;
-  key_event key;
-  mouse_event mouse;
-  SDLUnknownEvent unknown;
-  vec2 windowResized;
-  string text;
-};
-
 export struct SDLEventsState {
   enum_set<key_type> pressed_keys = enum_set<key_type>();
   vec2 leftJostickState = vec2(0, 0);
@@ -45,8 +28,8 @@ export void!string setRelativeMouseMode(SDLEventsState mutable* state, bool valu
   }
 }
 
-export vector<SDLEvent> getEvents(SDLEventsState mutable* state) {
-  mutable ret = vector<SDLEvent>();
+export vector<ui_event> getEvents(SDLEventsState mutable* state) {
+  mutable ret = vector<ui_event>();
   const updateKey = [&] (key_type k, bool s) {
     state^.pressed_keys.set(k, s);
   };
@@ -66,7 +49,7 @@ export vector<SDLEvent> getEvents(SDLEventsState mutable* state) {
       auto get = [&] {
         auto get_event = [&](key_type key, bool down, bool lctrl, bool lshift, bool lalt) {
           invoke(&updateKey, key, down);
-          return SDLEvent::key(key_event{key, down ? key_event_type::DOWN : key_event_type::UP,
+          return ui_event::key(key_event{key, down ? key_event_type::DOWN : key_event_type::UP,
               invoke(&getMods, lctrl, lshift, lalt)});
         };
         if (event.type == SDL_JOYBUTTONDOWN || event.type == SDL_JOYBUTTONUP) {
@@ -85,7 +68,7 @@ export vector<SDLEvent> getEvents(SDLEventsState mutable* state) {
           }
         }
         if (event.type == SDL_QUIT)
-          return SDLEvent::quit(SDLQuitEvent{});
+          return ui_event::quit();
         if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
           bool down = event.type == SDL_KEYDOWN;
           bool lctrl = event.key.keysym.mod & KMOD_LCTRL;
@@ -99,6 +82,16 @@ export vector<SDLEvent> getEvents(SDLEventsState mutable* state) {
             case SDLK_ESCAPE:return get_event(key_type::ESCAPE, down, lctrl, lshift, lalt);
             case SDLK_SPACE: return get_event(key_type::SPACE, down, lctrl, lshift, lalt);
             case SDLK_RETURN:return get_event(key_type::ENTER, down, lctrl, lshift, lalt);
+            case SDLK_KP_0:  return get_event(key_type::KEYPAD_0, down, lctrl, lshift, lalt);
+            case SDLK_KP_1:  return get_event(key_type::KEYPAD_1, down, lctrl, lshift, lalt);
+            case SDLK_KP_2:  return get_event(key_type::KEYPAD_2, down, lctrl, lshift, lalt);
+            case SDLK_KP_3:  return get_event(key_type::KEYPAD_3, down, lctrl, lshift, lalt);
+            case SDLK_KP_4:  return get_event(key_type::KEYPAD_4, down, lctrl, lshift, lalt);
+            case SDLK_KP_5:  return get_event(key_type::KEYPAD_5, down, lctrl, lshift, lalt);
+            case SDLK_KP_6:  return get_event(key_type::KEYPAD_6, down, lctrl, lshift, lalt);
+            case SDLK_KP_7:  return get_event(key_type::KEYPAD_7, down, lctrl, lshift, lalt);
+            case SDLK_KP_8:  return get_event(key_type::KEYPAD_8, down, lctrl, lshift, lalt);
+            case SDLK_KP_9:  return get_event(key_type::KEYPAD_9, down, lctrl, lshift, lalt);
             case SDLK_HOME:  return get_event(key_type::HOME, down, lctrl, lshift, lalt);
             case SDLK_END:   return get_event(key_type::END, down, lctrl, lshift, lalt);
             case SDLK_BACKSPACE:    return get_event(key_type::BACKSPACE, down, lctrl, lshift, lalt);
@@ -144,14 +137,14 @@ export vector<SDLEvent> getEvents(SDLEventsState mutable* state) {
         }
         if (event.type == SDL_MOUSEMOTION) {
           if (!state->relativeMouse)
-            return SDLEvent::mouse(mouse_event{mouse_event_type::MOUSE_MOVEMENT,
+            return ui_event::mouse(mouse_event{mouse_event_type::MOUSE_MOVEMENT,
                 vec2{event.motion.x, event.motion.y}});
           else
-            return SDLEvent::mouse(mouse_event{mouse_event_type::MOUSE_MOVEMENT,
+            return ui_event::mouse(mouse_event{mouse_event_type::MOUSE_MOVEMENT,
                 vec2{event.motion.xrel, event.motion.yrel}});
         }
         if (event.type == SDL_MOUSEWHEEL) {
-          return SDLEvent::mouse(mouse_event{
+          return ui_event::mouse(mouse_event{
               event.wheel.y > 0 ? mouse_event_type::WHEEL_UP : mouse_event_type::WHEEL_DOWN,
               vec2{event.button.x, event.button.y}});
         }
@@ -177,36 +170,36 @@ export vector<SDLEvent> getEvents(SDLEventsState mutable* state) {
               button = mouse_event_type::MIDDLE;
               break;
           }
-          return SDLEvent::mouse(mouse_event{ button, vec2{event.button.x, event.button.y} });
+          return ui_event::mouse(mouse_event{ button, vec2{event.button.x, event.button.y} });
         }
         if (event.type == SDL_MOUSEBUTTONUP) {
           switch (event.button.button) {
             case SDL_BUTTON_RIGHT:
-              return SDLEvent::mouse(mouse_event{ mouse_event_type::RIGHT_RELEASED,
+              return ui_event::mouse(mouse_event{ mouse_event_type::RIGHT_RELEASED,
                   vec2{event.button.x, event.button.y} });
             case SDL_BUTTON_LEFT:
-              return SDLEvent::mouse(mouse_event{ mouse_event_type::LEFT_RELEASED,
+              return ui_event::mouse(mouse_event{ mouse_event_type::LEFT_RELEASED,
                   vec2{event.button.x, event.button.y} });
             deault:
               break;
           }
         }
         if (event.type == SDL_TEXTINPUT) {
-          return SDLEvent::text(zenon_string::owned(event.text.text));
+          return ui_event::text_input(zenon_string::owned(event.text.text));
         }
         if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
-          return SDLEvent::windowResized(vec2{event.window.data1, event.window.data2});
+          return ui_event::window_resized(vec2{event.window.data1, event.window.data2});
         }
-        return SDLEvent::unknown(SDLUnknownEvent{});
+        return ui_event::unknown();
       };
       ret.push_back(get());
     }
   }
   for (e : enum_range<key_type>())
     if (state^.pressed_keys.contains(*e))
-      ret.push_back(SDLEvent::key(key_event(*e, key_event_type::HELD, enum_set<key_event_modifier>())));
-  ret.push_back(SDLEvent::mouse((mouse_event(mouse_event_type::JOYSTICK_LEFT, state^.leftJostickState))));
-  ret.push_back(SDLEvent::mouse((mouse_event(mouse_event_type::JOYSTICK_RIGHT, state^.rightJostickState))));
+      ret.push_back(ui_event::key(key_event(*e, key_event_type::HELD, enum_set<key_event_modifier>())));
+  ret.push_back(ui_event::mouse((mouse_event(mouse_event_type::JOYSTICK_LEFT, state^.leftJostickState))));
+  ret.push_back(ui_event::mouse((mouse_event(mouse_event_type::JOYSTICK_RIGHT, state^.rightJostickState))));
   return move(ret);
 }
 
